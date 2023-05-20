@@ -141,6 +141,8 @@ class DataTable2 extends DataTable {
     this.lmRatio = 1.2,
     this.sortArrowAnimationDuration = const Duration(milliseconds: 150),
     this.sortArrowIcon = Icons.arrow_upward,
+    this.verticalScrollPhysics,
+    this.horizontalScrollPhysics,
     required super.rows,
   })  : assert(fixedLeftColumns >= 0),
         assert(fixedTopRows >= 0) {
@@ -252,6 +254,18 @@ class DataTable2 extends DataTable {
   /// this color is static and doesn't repond to state change
   /// Note: to change background color of fixed data rows use [DataTable2.headingRowColor]
   final Color? fixedCornerColor;
+
+  /// Vertical scroll physics for the table
+  /// In case that table's height is already calculated and it's in the scrollable area
+  /// (e.g. in the scrollable dialog) it's recommended to set this property to [NeverScrollableScrollPhysics]
+  /// so it would not interfere with the parent scroll view
+  final ScrollPhysics? verticalScrollPhysics;
+
+  /// Horizontal scroll physics for the table
+  /// In case that table's width is already calculated and it's in the scrollable area
+  /// (e.g. in the scrollable dialog) it's recommended to set this property to [NeverScrollableScrollPhysics]
+  /// so it would not interfere with the parent scroll view
+  final ScrollPhysics? horizontalScrollPhysics;
 
   (double, double) getMinMaxRowHeight(DataTableThemeData dataTableTheme) {
     final double effectiveDataRowMinHeight = dataRowMinHeight ??
@@ -953,9 +967,11 @@ class DataTable2 extends DataTable {
                         fit: FlexFit.tight,
                         child: SingleChildScrollView(
                             controller: coreVerticalController,
+                            physics: verticalScrollPhysics,
                             scrollDirection: Axis.vertical,
                             child: SingleChildScrollView(
                                 controller: coreHorizontalController,
+                                physics: horizontalScrollPhysics,
                                 scrollDirection: Axis.horizontal,
                                 child: addBottomMargin(coreTable))))
                   ]));
@@ -975,6 +991,7 @@ class DataTable2 extends DataTable {
                                 child: SingleChildScrollView(
                                     controller: leftColumnVerticalContoller,
                                     scrollDirection: Axis.vertical,
+                                    physics: verticalScrollPhysics,
                                     child: addBottomMargin(fixedColumnsTable))))
                     ]);
             }
