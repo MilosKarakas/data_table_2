@@ -31,7 +31,12 @@ class DataColumn2 extends DataColumn {
       super.numeric = false,
       super.onSort,
       this.size = ColumnSize.M,
-      this.fixedWidth});
+      this.fixedWidth,
+      this.tooltipDecoration,
+      this.tooltipMargin,
+      this.tooltipPadding,
+      this.tooltipTextStyle
+      });
 
   /// Column sizes are determined based on available width by distributing it
   /// to individual columns accounting for their relative sizes (see [ColumnSize])
@@ -41,6 +46,18 @@ class DataColumn2 extends DataColumn {
   /// Warning, if the width happens to be larger than available total width other
   /// columns can be clipped
   final double? fixedWidth;
+
+  /// Defines tooltip decoration for the column
+  final ShapeDecoration? tooltipDecoration;
+
+  /// Defines tooltip margin for the column
+  final EdgeInsets? tooltipMargin;
+
+  /// Defines tooltip padding for the column
+  final EdgeInsets? tooltipPadding;
+
+  /// Defines tooltip text style for the column
+  final TextStyle? tooltipTextStyle;
 }
 
 /// Extension of standard [DataRow], adds row level tap events. Also there're
@@ -387,7 +404,12 @@ class DataTable2 extends DataTable {
       required bool sorted,
       required bool ascending,
       required double effectiveHeadingRowHeight,
-      required MaterialStateProperty<Color?>? overlayColor}) {
+      required MaterialStateProperty<Color?>? overlayColor,
+      ShapeDecoration? tooltipDecoration,
+      EdgeInsets? tooltipMargin,
+      EdgeInsets? tooltipPadding,
+      TextStyle? tooltipTextStyle,
+      }) {
     final ThemeData themeData = Theme.of(context);
 
     var customArrows =
@@ -428,6 +450,10 @@ class DataTable2 extends DataTable {
     if (tooltip != null) {
       label = Tooltip(
         message: tooltip,
+        decoration: tooltipDecoration,
+        margin: tooltipMargin,
+        padding: tooltipPadding,
+        textStyle: tooltipTextStyle,
         child: label,
       );
     }
@@ -800,6 +826,10 @@ class DataTable2 extends DataTable {
                   effectiveHeadingRowHeight: effectiveHeadingRowHeight,
                   label: column.label,
                   tooltip: column.tooltip,
+                  tooltipDecoration: column is DataColumn2 ? column.tooltipDecoration : null,
+                  tooltipMargin: column is DataColumn2 ? column.tooltipMargin : null,
+                  tooltipPadding: column is DataColumn2 ? column.tooltipPadding : null,
+                  tooltipTextStyle: column is DataColumn2 ? column.tooltipTextStyle : null,
                   numeric: column.numeric,
                   onSort: column.onSort != null
                       ? () => column.onSort!(dataColumnIndex,
